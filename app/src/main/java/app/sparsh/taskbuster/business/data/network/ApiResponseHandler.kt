@@ -1,18 +1,18 @@
-package app.sparsh.taskbuster.business.data.cache
+package app.sparsh.taskbuster.business.data.network
 
-import app.sparsh.taskbuster.business.data.cache.CacheErrors.CACHE_DATA_NULL
+import app.sparsh.taskbuster.business.data.network.NetworkErrors.NETWORK_DATA_NULL
+import app.sparsh.taskbuster.business.data.network.NetworkErrors.NETWORK_ERROR
 import app.sparsh.taskbuster.business.domain.state.*
 
-abstract class CacheResponseHandler<ViewState, Data>(
-    private val response: CacheResult<Data?>,
+abstract class ApiResponseHandler<ViewState, Data>(
+    private val response: ApiResult<Data?>,
     private val stateEvent: StateEvent?
 ) {
 
-    suspend fun getResult(): DataState<ViewState>? {
+    suspend fun getResult(): DataState<ViewState> {
 
         return when (response) {
-
-            is CacheResult.GenericError -> {
+            is ApiResult.GenericError -> {
                 DataState.error(
                     response = Response(
                         message = "${stateEvent?.errorInfo()}\n\n" +
@@ -23,13 +23,23 @@ abstract class CacheResponseHandler<ViewState, Data>(
                     stateEvent = stateEvent
                 )
             }
-
-            is CacheResult.Success -> {
+            is ApiResult.NetworkError -> {
+                DataState.error(
+                    response = Response(
+                        message = "${stateEvent?.errorInfo()}\n\n" +
+                                "Reason: ${NETWORK_ERROR}",
+                        uiComponentType = UIComponentType.Dialog(),
+                        messageType = MessageType.Error()
+                    ),
+                    stateEvent = stateEvent
+                )
+            }
+            is ApiResult.Success -> {
                 if (response.value == null) {
                     DataState.error(
                         response = Response(
                             message = "${stateEvent?.errorInfo()}\n\n" +
-                                    "Reason: ${CACHE_DATA_NULL}",
+                                    "Reason: ${NETWORK_DATA_NULL}",
                             uiComponentType = UIComponentType.Dialog(),
                             messageType = MessageType.Error()
                         ),
@@ -40,6 +50,7 @@ abstract class CacheResponseHandler<ViewState, Data>(
                 }
             }
         }
+
     }
 
     abstract fun handleSuccess(resultObject: Data): DataState<ViewState>
