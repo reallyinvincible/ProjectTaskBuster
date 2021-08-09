@@ -74,8 +74,6 @@ dependencies {
     //Espresso
     implementation AndroidTestDependencies.idling_resource
 
-
-
     testImplementation TestDependencies.mockk
     testImplementation TestDependencies.jupiter_api
     testImplementation TestDependencies.jupiter_params
