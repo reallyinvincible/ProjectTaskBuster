@@ -2,6 +2,7 @@ package app.sparsh.taskbuster.business.data.cache.implementation
 
 import app.sparsh.taskbuster.business.data.cache.abstraction.NoteCacheDataSource
 import app.sparsh.taskbuster.business.domain.model.Note
+import app.sparsh.taskbuster.framework.datasource.cache.abstraction.NoteDaoService
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,8 +22,9 @@ constructor(
     override suspend fun updateNote(primaryKey: String, newTitle: String, newBody: String): Int =
         updateNote(primaryKey, newTitle, newBody)
 
-    override suspend fun searchNotes(query: String, filterAndOrder: String, page: Int): List<Note> =
-        noteDaoService.searchNotes(query, filterAndOrder, page)
+    override suspend fun searchNotes(query: String, filterAndOrder: String, page: Int): List<Note> {
+        TODO("Check and write query")
+    }
 
     override suspend fun searchNoteById(primaryKey: String): Note? =
         noteDaoService.searchNoteById(primaryKey)

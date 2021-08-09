@@ -2,6 +2,7 @@ package app.sparsh.taskbuster.business.data.network.implementation
 
 import app.sparsh.taskbuster.business.data.network.abstraction.NoteNetworkDataSource
 import app.sparsh.taskbuster.business.domain.model.Note
+import app.sparsh.taskbuster.framework.datasource.network.abstraction.NoteFirestoreService
 import javax.inject.Inject
 import javax.inject.Singleton
 
