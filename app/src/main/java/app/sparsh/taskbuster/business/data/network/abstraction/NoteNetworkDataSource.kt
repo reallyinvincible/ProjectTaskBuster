@@ -20,6 +20,7 @@ interface NoteNetworkDataSource {
 
     suspend fun getAllNotes(): List<Note>
 
-    suspend fun insertOrUpdateNote(notes: List<Note>)
+    suspend fun insertOrUpdateNotes(notes: List<Note>)
 
+    suspend fun deleteAllNotes()
 }

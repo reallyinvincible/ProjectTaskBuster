@@ -16,8 +16,8 @@ constructor(
     override suspend fun insertOrUpdateNote(note: Note) =
         noteFirestoreService.insertOrUpdateNote(note)
 
-    override suspend fun insertOrUpdateNote(notes: List<Note>) =
-        noteFirestoreService.insertOrUpdateNote(notes)
+    override suspend fun insertOrUpdateNotes(notes: List<Note>) =
+        noteFirestoreService.insertOrUpdateNotes(notes)
 
     override suspend fun deleteNote(primaryKey: String) =
         noteFirestoreService.deleteNote(primaryKey)
@@ -36,5 +36,7 @@ constructor(
     override suspend fun searchNote(note: Note): Note? = noteFirestoreService.searchNote(note)
 
     override suspend fun getAllNotes(): List<Note> = noteFirestoreService.getAllNotes()
+
+    override suspend fun deleteAllNotes() = noteFirestoreService.deleteAllNotes()
 
 }
