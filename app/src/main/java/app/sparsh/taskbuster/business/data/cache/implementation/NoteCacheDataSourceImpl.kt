@@ -19,8 +19,12 @@ constructor(
 
     override suspend fun deleteNotes(notes: List<Note>): Int = noteDaoService.deleteNotes(notes)
 
-    override suspend fun updateNote(primaryKey: String, newTitle: String, newBody: String): Int =
-        updateNote(primaryKey, newTitle, newBody)
+    override suspend fun updateNote(
+        primaryKey: String,
+        newTitle: String,
+        newBody: String?,
+        timestamp: String?
+    ): Int = noteDaoService.updateNote(primaryKey, newTitle, newBody, timestamp)
 
     override suspend fun searchNotes(query: String, filterAndOrder: String, page: Int): List<Note> {
         TODO("Check and write query")
@@ -31,6 +35,8 @@ constructor(
 
     override suspend fun getNumNotes(): Int = noteDaoService.getNumNotes()
 
-    override suspend fun insertNotes(notes: List<Note>): Long = noteDaoService.insertNotes(notes)
+    override suspend fun insertNotes(notes: List<Note>): LongArray = noteDaoService.insertNotes(notes)
+
+    override suspend fun getAllNotes(): List<Note> = noteDaoService.getAllNotes()
 
 }

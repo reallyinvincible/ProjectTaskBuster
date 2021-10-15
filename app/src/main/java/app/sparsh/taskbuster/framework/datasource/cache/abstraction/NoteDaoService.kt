@@ -11,7 +11,7 @@ interface NoteDaoService {
 
     suspend fun deleteNotes(notes: List<Note>): Int
 
-    suspend fun updateNote(primaryKey: String, newTitle: String, newBody: String): Int
+    suspend fun updateNote(primaryKey: String, newTitle: String, newBody: String?, timestamp: String?): Int
 
     suspend fun searchNotes(): List<Note>
 
@@ -43,7 +43,9 @@ interface NoteDaoService {
 
     suspend fun getNumNotes(): Int
 
-    suspend fun insertNotes(notes: List<Note>): Long
+    suspend fun insertNotes(notes: List<Note>): LongArray
+
+    fun getAllNotes(): List<Note>
 
     suspend fun returnOrderedQuery(
         query: String,
