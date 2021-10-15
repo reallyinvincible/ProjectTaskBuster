@@ -71,6 +71,10 @@ dependencies {
     implementation Dependencies.kotlin_coroutines_android
     implementation Dependencies.kotlin_coroutines_play_services
 
+    //Retrofit
+    implementation Dependencies.retrofit
+    implementation Dependencies.retrofit_gson
+
     //Espresso
     implementation AndroidTestDependencies.idling_resource
 
