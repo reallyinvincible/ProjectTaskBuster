@@ -1,8 +1,12 @@
 package app.sparsh.taskbuster.business.interactors.notelist
 
+import app.sparsh.taskbuster.business.data.cache.CacheErrors.CACHE_ERROR_UNKNOWN
+import app.sparsh.taskbuster.business.data.cache.FORCE_GENERAL_FAILURE
+import app.sparsh.taskbuster.business.data.cache.FORCE_NEW_NOTE_EXCEPTION
 import app.sparsh.taskbuster.business.data.cache.abstraction.NoteCacheDataSource
 import app.sparsh.taskbuster.business.data.network.abstraction.NoteNetworkDataSource
 import app.sparsh.taskbuster.business.domain.model.NoteFactory
+import app.sparsh.taskbuster.business.interactors.notelist.InsertNewNote.Companion.INSERT_NOTE_FAILED
 import app.sparsh.taskbuster.business.interactors.notelist.InsertNewNote.Companion.INSERT_NOTE_SUCCESS
 import app.sparsh.taskbuster.di.DependencyContainer
 import app.sparsh.taskbuster.framework.presentation.notelist.state.NoteListStateEvent
@@ -87,6 +91,74 @@ class InsertNewNoteTest {
         val networkNoteThatWasInserted = noteNetworkDataSource.searchNote(newNote)
         assertTrue(
             networkNoteThatWasInserted == newNote
+        )
+    }
+
+    @Test
+    fun insertNote_fail_confirmNetworkAndCacheUnchanged() = runBlocking {
+
+        val newNote = noteFactory.createSingleNote(
+            id = FORCE_GENERAL_FAILURE,
+            title = UUID.randomUUID().toString()
+        )
+
+        insertNewNote.insertNewNote(
+            id = newNote.id,
+            title = newNote.title,
+            stateEvent = NoteListStateEvent.InsertNewNoteEvent(
+                title = newNote.title
+            )
+        ).collect { value ->
+            assertEquals(
+                value?.stateMessage?.response?.message,
+                INSERT_NOTE_FAILED
+            )
+        }
+
+        //Confirm cache was not updated
+        val cacheNoteThatWasInserted = noteCacheDataSource.searchNoteById(newNote.id)
+        assertTrue(
+            cacheNoteThatWasInserted == null
+        )
+
+        //Confirm network value was not updated
+        val networkNoteThatWasInserted = noteNetworkDataSource.searchNote(newNote)
+        assertTrue(
+            networkNoteThatWasInserted == null
+        )
+    }
+
+    @Test
+    fun throwException_checkGenericError_confirmNetworkAndCacheUnchanged() = runBlocking {
+
+        val newNote = noteFactory.createSingleNote(
+            id = FORCE_NEW_NOTE_EXCEPTION,
+            title = UUID.randomUUID().toString()
+        )
+
+        insertNewNote.insertNewNote(
+            id = newNote.id,
+            title = newNote.title,
+            stateEvent = NoteListStateEvent.InsertNewNoteEvent(
+                title = newNote.title
+            )
+        ).collect { value ->
+            assert(
+                value?.stateMessage?.response?.message
+                    ?.contains(CACHE_ERROR_UNKNOWN)?: false
+            )
+        }
+
+        //Confirm cache was not updated
+        val cacheNoteThatWasInserted = noteCacheDataSource.searchNoteById(newNote.id)
+        assertTrue(
+            cacheNoteThatWasInserted == null
+        )
+
+        //Confirm network value was not updated
+        val networkNoteThatWasInserted = noteNetworkDataSource.searchNote(newNote)
+        assertTrue(
+            networkNoteThatWasInserted == null
         )
     }
 
